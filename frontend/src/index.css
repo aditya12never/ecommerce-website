@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+/* =========================================================
+   SHOPZONE GLOBAL DESIGN SYSTEM
+   ========================================================= */
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply min-w-[320px] bg-white text-gray-900 font-sans overflow-x-hidden antialiased;
+  }
+
+  * {
+    @apply box-border;
+  }
+
+  img {
+    @apply block max-w-full;
+  }
+
+  a {
+    @apply no-underline text-inherit;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  h1 {
+    @apply text-3xl sm:text-4xl md:text-5xl leading-tight;
+  }
+
+  h2 {
+    @apply text-2xl sm:text-3xl leading-tight;
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply leading-tight;
+  }
+
+  p {
+    @apply leading-relaxed;
+  }
+}
+
+@layer components {
+  .shop-container {
+    @apply mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8;
+  }
+
+  .shop-btn {
+    @apply inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border border-transparent px-5 text-[15px] font-semibold leading-none whitespace-nowrap transition-all duration-200 sm:w-auto;
+  }
+
+  .shop-btn-primary {
+    @apply bg-gray-900 text-white hover:bg-gray-800;
+  }
+
+  .shop-btn-secondary {
+    @apply border border-gray-300 bg-white text-gray-900 hover:bg-gray-50 hover:border-gray-400;
+  }
+
+  .shop-section {
+    @apply w-full;
+  }
+
+  .shop-section-sm {
+    @apply py-10 md:py-12;
+  }
+
+  .shop-section-md {
+    @apply py-12 md:py-16;
+  }
+
+  .shop-section-lg {
+    @apply py-14 md:py-20;
+  }
+
+  .shop-page-header {
+    @apply border-b border-gray-200 bg-gray-50;
+  }
+
+  .shop-page-header-inner {
+    @apply py-10 md:py-14;
+  }
+
+  .shop-input {
+    @apply h-12 w-full rounded-xl border border-gray-300 bg-white px-4 text-gray-900 outline-none transition-all duration-200 placeholder:text-gray-400 focus:border-gray-500 focus:ring-[3px] focus:ring-gray-500/10;
+  }
+
+  .shop-card {
+    @apply rounded-2xl border border-gray-200 bg-white;
+  }
+
+  .shop-card-soft {
+    @apply rounded-2xl border border-gray-50 bg-gray-50;
+  }
+}

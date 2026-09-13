@@ -1,0 +1,16 @@
+.app {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.app-content {
+  width: 100%;
+  min-height: calc(100vh - 68px);
+  overflow-x: hidden;
+}
+
+@media (max-width: 639px) {
+  .app-content {
+    min-height: calc(100vh - 64px);
+  }
+}
