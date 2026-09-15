@@ -18,7 +18,10 @@ import com.ecommerce.service.UserService;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+    "http://localhost:5173",
+    "https://shopzone1.up.railway.app"
+})
 public class UserController {
 
     private final UserService userService;
