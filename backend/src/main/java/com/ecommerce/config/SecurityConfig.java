@@ -1,8 +1,14 @@
 package com.ecommerce.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,23 +28,41 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "https://shopzone1.up.railway.app"
+        ));
+
+        configuration.setAllowedMethods(List.of(
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "OPTIONS"
+        ));
+
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(false);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http
     ) throws Exception {
 
         http
-
-            // ==========================================
-            // DISABLE CSRF
-            // ==========================================
-
             .csrf(csrf -> csrf.disable())
-
-
-            // ==========================================
-            // SESSION MANAGEMENT
-            // JWT = STATELESS
-            // ==========================================
 
             .sessionManagement(session ->
                     session.sessionCreationPolicy(
@@ -46,17 +70,7 @@ public class SecurityConfig {
                     )
             )
 
-
-            // ==========================================
-            // AUTHORIZATION RULES
-            // ==========================================
-
             .authorizeHttpRequests(auth -> auth
-
-
-                    // ==================================
-                    // PUBLIC AUTH APIs
-                    // ==================================
 
                     .requestMatchers(
                             "/api/auth/register",
@@ -65,21 +79,11 @@ public class SecurityConfig {
                             "/api/users/login"
                     ).permitAll()
 
-
-                    // ==================================
-                    // PUBLIC PRODUCT GET
-                    // ==================================
-
                     .requestMatchers(
                             HttpMethod.GET,
                             "/api/products",
                             "/api/products/*"
                     ).permitAll()
-
-
-                    // ==================================
-                    // ADMIN PRODUCT MANAGEMENT
-                    // ==================================
 
                     .requestMatchers(
                             HttpMethod.POST,
@@ -96,20 +100,10 @@ public class SecurityConfig {
                             "/api/products/*"
                     ).hasAuthority("ROLE_ADMIN")
 
-
-                    // ==================================
-                    // ADMIN - ALL ORDERS
-                    // ==================================
-
                     .requestMatchers(
                             HttpMethod.GET,
                             "/api/orders"
                     ).hasAuthority("ROLE_ADMIN")
-
-
-                    // ==================================
-                    // USER / ADMIN - OWN ORDERS
-                    // ==================================
 
                     .requestMatchers(
                             HttpMethod.GET,
@@ -127,11 +121,6 @@ public class SecurityConfig {
                             "ROLE_ADMIN"
                     )
 
-
-                    // ==================================
-                    // CREATE ORDER
-                    // ==================================
-
                     .requestMatchers(
                             HttpMethod.POST,
                             "/api/orders"
@@ -140,20 +129,10 @@ public class SecurityConfig {
                             "ROLE_ADMIN"
                     )
 
-
-                    // ==================================
-                    // ADMIN - UPDATE ORDER STATUS
-                    // ==================================
-
                     .requestMatchers(
                             HttpMethod.PUT,
                             "/api/orders/*/status"
                     ).hasAuthority("ROLE_ADMIN")
-
-
-                    // ==================================
-                    // USER / ADMIN - CANCEL OWN ORDER
-                    // ==================================
 
                     .requestMatchers(
                             HttpMethod.PUT,
@@ -163,11 +142,6 @@ public class SecurityConfig {
                             "ROLE_ADMIN"
                     )
 
-
-                    // ==================================
-                    // USER / ADMIN - DELETE OWN CANCELLED
-                    // ==================================
-
                     .requestMatchers(
                             HttpMethod.DELETE,
                             "/api/orders/*"
@@ -175,11 +149,6 @@ public class SecurityConfig {
                             "ROLE_USER",
                             "ROLE_ADMIN"
                     )
-
-
-                    // ==================================
-                    // USER / ADMIN PROFILE
-                    // ==================================
 
                     .requestMatchers(
                             "/api/auth/profile",
@@ -189,42 +158,21 @@ public class SecurityConfig {
                             "ROLE_ADMIN"
                     )
 
-
-                    // ==================================
-                    // CORS PREFLIGHT
-                    // ==================================
-
                     .requestMatchers(
                             HttpMethod.OPTIONS,
                             "/**"
                     ).permitAll()
 
-
-                    // ==================================
-                    // EVERYTHING ELSE
-                    // ==================================
-
                     .anyRequest().authenticated()
             )
 
-
-            // ==========================================
-            // CORS
-            // ==========================================
-
             .cors(cors -> {
             })
-
-
-            // ==========================================
-            // JWT FILTER
-            // ==========================================
 
             .addFilterBefore(
                     jwtAuthenticationFilter,
                     UsernamePasswordAuthenticationFilter.class
             );
-
 
         return http.build();
     }
