@@ -38,10 +38,15 @@ function Home() {
   ];
 
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [productsError, setProductsError] = useState("");
 
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
+        setLoadingProducts(true);
+        setProductsError("");
+
         const response = await fetch(
           `${import.meta.env.VITE_API_URL}/api/products`
         );
@@ -51,10 +56,12 @@ function Home() {
         }
 
         const data = await response.json();
-
         setFeaturedProducts(data.slice(0, 4));
       } catch (error) {
         console.error("Failed to load featured products:", error);
+        setProductsError("Unable to load featured products.");
+      } finally {
+        setLoadingProducts(false);
       }
     };
 
@@ -118,7 +125,6 @@ function Home() {
                   <p className="text-2xl font-bold text-gray-900">
                     10K+
                   </p>
-
                   <p className="text-sm text-gray-500 mt-1">
                     Happy Customers
                   </p>
@@ -128,7 +134,6 @@ function Home() {
                   <p className="text-2xl font-bold text-gray-900">
                     500+
                   </p>
-
                   <p className="text-sm text-gray-500 mt-1">
                     Products
                   </p>
@@ -138,7 +143,6 @@ function Home() {
                   <p className="text-2xl font-bold text-gray-900">
                     4.8★
                   </p>
-
                   <p className="text-sm text-gray-500 mt-1">
                     Customer Rating
                   </p>
@@ -154,7 +158,6 @@ function Home() {
 
                 {/* Decorative Shapes */}
                 <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/10" />
-
                 <div className="absolute -bottom-24 -left-20 w-72 h-72 rounded-full bg-white/5" />
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-8 text-center">
@@ -184,7 +187,6 @@ function Home() {
 
                 {/* Decorative Product Circles */}
                 <div className="absolute top-8 left-8 w-12 h-12 rounded-full border border-white/20" />
-
                 <div className="absolute bottom-10 right-10 w-16 h-16 rounded-full border border-white/10" />
 
               </div>
@@ -281,7 +283,6 @@ function Home() {
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
 
             <div>
-
               <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-gray-500">
                 Browse
               </p>
@@ -294,7 +295,6 @@ function Home() {
                 Explore our popular categories and find products
                 made for your everyday needs.
               </p>
-
             </div>
 
             <Link
@@ -391,17 +391,40 @@ function Home() {
           </div>
 
 
-          {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+          {/* Product Content */}
 
-            {featuredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-              />
-            ))}
+          {loadingProducts ? (
 
-          </div>
+            <div className="py-12 text-center text-gray-500">
+              Loading featured products...
+            </div>
+
+          ) : productsError ? (
+
+            <div className="py-12 text-center text-red-500">
+              {productsError}
+            </div>
+
+          ) : featuredProducts.length === 0 ? (
+
+            <div className="py-12 text-center text-gray-500">
+              No featured products available.
+            </div>
+
+          ) : (
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+
+              {featuredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                />
+              ))}
+
+            </div>
+
+          )}
 
         </div>
 
