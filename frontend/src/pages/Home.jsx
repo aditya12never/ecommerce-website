@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
   FiArrowRight,
   FiTruck,
@@ -11,7 +12,6 @@ import {
 } from "react-icons/fi";
 
 import ProductCard from "../components/ProductCard";
-import products from "../data/products";
 
 function Home() {
   const categories = [
@@ -37,7 +37,28 @@ function Home() {
     },
   ];
 
-  const featuredProducts = products.slice(0, 4);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchFeaturedProducts = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/products`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+
+        const data = await response.json();
+        setFeaturedProducts(data.slice(0, 4));
+      } catch (error) {
+        console.error("Failed to load featured products:", error);
+      }
+    };
+
+    fetchFeaturedProducts();
+  }, []);
 
   return (
     <main className="bg-white text-gray-900">
@@ -170,7 +191,7 @@ function Home() {
 
       {/* =====================================================
           BENEFITS SECTION
-      ====================================================== */}
+      ====================================================== */
 
       <section className="border-b border-gray-200 bg-white">
         <div className="shop-container">
@@ -244,7 +265,7 @@ function Home() {
 
       {/* =====================================================
           CATEGORY SECTION
-      ====================================================== */}
+      ====================================================== */
 
       <section className="py-16 sm:py-20">
 
@@ -326,7 +347,7 @@ function Home() {
 
       {/* =====================================================
           FEATURED PRODUCTS
-      ====================================================== */}
+      ====================================================== */
 
       <section className="py-16 sm:py-20 bg-gray-50">
 
@@ -381,7 +402,7 @@ function Home() {
 
       {/* =====================================================
           CTA SECTION
-      ====================================================== */}
+      ====================================================== */
 
       <section className="py-16 sm:py-20 bg-white">
 
